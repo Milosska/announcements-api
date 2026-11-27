@@ -1,4 +1,5 @@
 import { type Request, type Response } from "express";
+import createHttpError from "http-errors";
 import bcrypt from "bcrypt";
 
 import prisma from "../../prisma/client.ts";
@@ -8,6 +9,8 @@ import {
   setRefreshTokenCookie,
 } from "../services/authService.ts";
 
+import type { userResponse } from "../validators/authValidator.ts";
+
 export const register = async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
 
@@ -16,9 +19,10 @@ export const register = async (req: Request, res: Response) => {
   });
 
   if (userWithUsername) {
-    res.status(409).json({
-      message: `User with username ${username} already exists.`,
-    });
+    throw createHttpError(
+      409,
+      `User with username ${username} already exists.`,
+    );
   }
 
   const userWithEmail = await prisma.user.findUnique({
@@ -26,9 +30,10 @@ export const register = async (req: Request, res: Response) => {
   });
 
   if (userWithEmail) {
-    res.status(409).json({
-      message: `User with email ${email} is already registered.`,
-    });
+    throw createHttpError(
+      409,
+      `User with email ${email} is already registered.`,
+    );
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
@@ -47,6 +52,33 @@ export const register = async (req: Request, res: Response) => {
 
   res.status(201).json({
     user: newUser,
+    accessToken,
+    refreshToken,
+  });
+};
+
+export const login = async (req: Request, res: Response) => {
+  const { username, password } = req.body;
+
+  const user = await prisma.user.findUnique({
+    where: { username },
+  });
+
+  if (!user) {
+    throw createHttpError(401, `Incorrect username or password.`);
+  }
+
+  const { password: dbUserPassword, ...userData } = user;
+  const isPasswordValid = await bcrypt.compare(password, dbUserPassword);
+  if (!isPasswordValid) {
+    throw createHttpError(401, `Incorrect username or password.`);
+  }
+
+  const { accessToken, refreshToken } = await createTokens(user.id);
+  setRefreshTokenCookie(res, refreshToken);
+
+  res.status(200).json({
+    user: userData,
     accessToken,
     refreshToken,
   });

@@ -3,7 +3,11 @@ import {
   OpenAPIRegistry,
 } from "@asteasolutions/zod-to-openapi";
 
-import { registerSchema, userSchema } from "./validators/authValidator.ts";
+import {
+  registerSchema,
+  loginSchema,
+  userSchema,
+} from "./validators/authValidator.ts";
 
 export const registry = new OpenAPIRegistry();
 
@@ -29,6 +33,7 @@ export function generateOpenApiDocument() {
 
 // Auth path group
 const RegisterSchema = registry.register("Register", registerSchema);
+const LoginSchema = registry.register("Login", loginSchema);
 const UserSchema = registry.register("User", userSchema);
 
 registry.registerPath({
@@ -45,14 +50,40 @@ registry.registerPath({
   },
   responses: {
     201: {
-      description: "User registered successfully",
+      description: "User registered successfully.",
       content: {
         "application/json": {
           schema: UserSchema,
         },
       },
     },
-    409: { description: "Username or email already taken" },
-    422: { description: "Validation error" },
+    409: { description: "Username or email already taken." },
+    422: { description: "Validation error." },
+  },
+});
+
+registry.registerPath({
+  method: "post",
+  path: "/auth/login",
+  tags: ["Auth"],
+  summary: "Login registered user",
+  request: {
+    body: {
+      content: {
+        "application/json": { schema: LoginSchema },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: "User logged in successfully.",
+      content: {
+        "application/json": {
+          schema: UserSchema,
+        },
+      },
+    },
+    401: { description: "Incorrect username or password." },
+    422: { description: "Validation error." },
   },
 });

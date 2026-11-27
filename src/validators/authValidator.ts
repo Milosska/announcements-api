@@ -15,9 +15,16 @@ export const registerSchema = z.object({
   }),
 });
 
+export const loginSchema = registerSchema.pick({
+  username: true,
+  password: true,
+});
+
 export const userSchema = z.object({
   id: z.number().positive(),
   ...registerSchema.omit({ password: true }).shape,
   accessToken: z.string(),
   refreshToken: z.string(),
 });
+
+export type userResponse = z.infer<typeof userSchema>;
