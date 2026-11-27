@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import validateBody from "../middlewares/validateBody.ts";
+import { authenticate, validateBody } from "../middlewares/index.ts";
 
 import {
   registerSchema,
@@ -8,7 +8,12 @@ import {
   refreshSchema,
 } from "../validators/authValidator.ts";
 
-import { register, login, refresh } from "../controllers/authController.ts";
+import {
+  register,
+  login,
+  refresh,
+  getMe,
+} from "../controllers/authController.ts";
 
 const authRouter = Router();
 
@@ -17,5 +22,7 @@ authRouter.post("/register", validateBody(registerSchema), register);
 authRouter.post("/login", validateBody(loginSchema), login);
 
 authRouter.post("/refresh", validateBody(refreshSchema), refresh);
+
+authRouter.get("/me", authenticate, getMe);
 
 export default authRouter;

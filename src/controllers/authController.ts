@@ -75,7 +75,7 @@ export const login = async (req: Request, res: Response) => {
   const { accessToken, refreshToken } = await createTokens(user.id);
   setRefreshTokenCookie(res, refreshToken);
 
-  res.status(200).json({
+  res.json({
     user: userData,
     accessToken,
     refreshToken,
@@ -112,8 +112,14 @@ export const refresh = async (req: Request, res: Response) => {
   );
   setRefreshTokenCookie(res, refreshToken);
 
-  res.status(200).json({
+  res.json({
     accessToken,
     refreshToken: newRefreshToken,
+  });
+};
+
+export const getMe = async (req: Request, res: Response) => {
+  res.json({
+    ...req.user,
   });
 };

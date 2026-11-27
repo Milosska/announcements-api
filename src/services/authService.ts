@@ -9,13 +9,13 @@ import {
   REFRESH_TOKEN_LIFETIME,
 } from "../constants/constants.ts";
 
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  throw new Error("JWT_SECRET is not defined");
+}
+
 export const createTokens = async (userId: number) => {
-  const JWT_SECRET = process.env.JWT_SECRET;
-
-  if (!JWT_SECRET) {
-    throw new Error("JWT_SECRET is not defined");
-  }
-
   const accessToken = jwt.sign({}, JWT_SECRET, {
     subject: String(userId),
     expiresIn: ACCESS_TOKEN_LIFETIME / 1000,
@@ -49,4 +49,22 @@ export const setRefreshTokenCookie = (res: Response, refreshToken: string) => {
     sameSite: "strict",
     maxAge: REFRESH_TOKEN_LIFETIME,
   });
+};
+
+export const verifyToken = (token: string) => {
+  try {
+    const payload = jwt.verify(token, JWT_SECRET);
+    if (typeof payload === "string" || !payload.sub) {
+      throw new Error("Token payload must contain sub");
+    }
+    return {
+      data: payload,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error : new Error("Invalid token"),
+      data: null,
+    };
+  }
 };

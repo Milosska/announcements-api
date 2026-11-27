@@ -24,9 +24,15 @@ export const refreshSchema = z.object({
   refreshToken: z.string().optional(),
 });
 
-export const userSchema = z.object({
+export const meSchema = z.object({
   id: z.number().positive(),
   ...registerSchema.omit({ password: true }).shape,
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
+export const userSchema = z.object({
+  user: meSchema,
   accessToken: z.string(),
   refreshToken: z.string(),
 });

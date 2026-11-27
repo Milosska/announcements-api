@@ -9,6 +9,7 @@ import {
   refreshSchema,
   userSchema,
   tokensSchema,
+  meSchema,
 } from "./validators/authValidator.ts";
 
 export const registry = new OpenAPIRegistry();
@@ -39,6 +40,7 @@ const LoginSchema = registry.register("Login", loginSchema);
 const RefreshSchema = registry.register("Refresh", refreshSchema);
 const UserSchema = registry.register("User", userSchema);
 const TokensSchema = registry.register("Tokens", tokensSchema);
+const MeSchema = registry.register("Me", meSchema);
 
 registry.registerPath({
   method: "post",
@@ -109,11 +111,34 @@ registry.registerPath({
       description: "Tokens refreshed successfully",
       content: {
         "application/json": {
-          schema: tokensSchema,
+          schema: TokensSchema,
         },
       },
     },
     401: { description: "Refresh token is not provided, invalid or expired" },
     422: { description: "Validation error" },
+  },
+});
+
+registry.registerPath({
+  method: "get",
+  path: "/auth/me",
+  tags: ["Auth"],
+  security: [{ bearerAuth: [] }],
+  summary: "Get user info",
+  request: {},
+  responses: {
+    200: {
+      description: "User data returned",
+      content: {
+        "application/json": {
+          schema: MeSchema,
+        },
+      },
+    },
+    401: {
+      description:
+        "Access token is not provided, invalid or expired; User not found",
+    },
   },
 });
