@@ -13,6 +13,7 @@ import {
   login,
   refresh,
   getMe,
+  logout,
 } from "../controllers/authController.ts";
 
 const authRouter = Router();
@@ -24,5 +25,7 @@ authRouter.post("/login", validateBody(loginSchema), login);
 authRouter.post("/refresh", validateBody(refreshSchema), refresh);
 
 authRouter.get("/me", authenticate, getMe);
+
+authRouter.post("/logout", authenticate, logout);
 
 export default authRouter;

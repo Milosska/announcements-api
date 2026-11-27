@@ -142,3 +142,21 @@ registry.registerPath({
     },
   },
 });
+
+registry.registerPath({
+  method: "post",
+  path: "/auth/logout",
+  tags: ["Auth"],
+  security: [{ bearerAuth: [] }],
+  summary: "Logout registered user",
+  request: {},
+  responses: {
+    204: {
+      description: "User logged out successfully",
+    },
+    401: {
+      description:
+        "Access token is not provided, invalid or expired; User not found",
+    },
+  },
+});

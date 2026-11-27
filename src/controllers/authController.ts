@@ -110,7 +110,7 @@ export const refresh = async (req: Request, res: Response) => {
   const { accessToken, refreshToken: newRefreshToken } = await createTokens(
     dbToken.userId,
   );
-  setRefreshTokenCookie(res, refreshToken);
+  setRefreshTokenCookie(res, newRefreshToken);
 
   res.json({
     accessToken,
@@ -122,4 +122,14 @@ export const getMe = async (req: Request, res: Response) => {
   res.json({
     ...req.user,
   });
+};
+
+export const logout = async (req: Request, res: Response) => {
+  await prisma.refreshToken.deleteMany({
+    where: {
+      userId: req.user!.id,
+    },
+  });
+
+  res.status(204).send();
 };
