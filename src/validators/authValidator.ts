@@ -20,11 +20,20 @@ export const loginSchema = registerSchema.pick({
   password: true,
 });
 
+export const refreshSchema = z.object({
+  refreshToken: z.string().optional(),
+});
+
 export const userSchema = z.object({
   id: z.number().positive(),
   ...registerSchema.omit({ password: true }).shape,
   accessToken: z.string(),
   refreshToken: z.string(),
+});
+
+export const tokensSchema = userSchema.pick({
+  accessToken: true,
+  refreshToken: true,
 });
 
 export type userResponse = z.infer<typeof userSchema>;

@@ -6,7 +6,9 @@ import {
 import {
   registerSchema,
   loginSchema,
+  refreshSchema,
   userSchema,
+  tokensSchema,
 } from "./validators/authValidator.ts";
 
 export const registry = new OpenAPIRegistry();
@@ -34,7 +36,9 @@ export function generateOpenApiDocument() {
 // Auth path group
 const RegisterSchema = registry.register("Register", registerSchema);
 const LoginSchema = registry.register("Login", loginSchema);
+const RefreshSchema = registry.register("Refresh", refreshSchema);
 const UserSchema = registry.register("User", userSchema);
+const TokensSchema = registry.register("Tokens", tokensSchema);
 
 registry.registerPath({
   method: "post",
@@ -50,15 +54,15 @@ registry.registerPath({
   },
   responses: {
     201: {
-      description: "User registered successfully.",
+      description: "User registered successfully",
       content: {
         "application/json": {
           schema: UserSchema,
         },
       },
     },
-    409: { description: "Username or email already taken." },
-    422: { description: "Validation error." },
+    409: { description: "Username or email already taken" },
+    422: { description: "Validation error" },
   },
 });
 
@@ -76,14 +80,40 @@ registry.registerPath({
   },
   responses: {
     200: {
-      description: "User logged in successfully.",
+      description: "User logged in successfully",
       content: {
         "application/json": {
           schema: UserSchema,
         },
       },
     },
-    401: { description: "Incorrect username or password." },
-    422: { description: "Validation error." },
+    401: { description: "Incorrect username or password" },
+    422: { description: "Validation error" },
+  },
+});
+
+registry.registerPath({
+  method: "post",
+  path: "/auth/refresh",
+  tags: ["Auth"],
+  summary: "Refresh tokens for user",
+  request: {
+    body: {
+      content: {
+        "application/json": { schema: RefreshSchema },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: "Tokens refreshed successfully",
+      content: {
+        "application/json": {
+          schema: tokensSchema,
+        },
+      },
+    },
+    401: { description: "Refresh token is not provided, invalid or expired" },
+    422: { description: "Validation error" },
   },
 });

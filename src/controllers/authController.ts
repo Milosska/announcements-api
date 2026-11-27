@@ -9,8 +9,6 @@ import {
   setRefreshTokenCookie,
 } from "../services/authService.ts";
 
-import type { userResponse } from "../validators/authValidator.ts";
-
 export const register = async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
 
@@ -81,5 +79,41 @@ export const login = async (req: Request, res: Response) => {
     user: userData,
     accessToken,
     refreshToken,
+  });
+};
+
+export const refresh = async (req: Request, res: Response) => {
+  const refreshToken = req.cookies.refreshToken || req.body?.refreshToken;
+  if (!refreshToken) {
+    throw createHttpError(401, "Refresh token is not provided");
+  }
+
+  const dbToken = await prisma.refreshToken.findUnique({
+    where: {
+      token: refreshToken,
+    },
+  });
+
+  if (!dbToken) {
+    throw createHttpError(401, "Invalid refresh token");
+  }
+
+  if (new Date() > dbToken.expiresAt) {
+    await prisma.refreshToken.delete({
+      where: {
+        token: refreshToken,
+      },
+    });
+    throw createHttpError(401, "Refresh token is expired");
+  }
+
+  const { accessToken, refreshToken: newRefreshToken } = await createTokens(
+    dbToken.userId,
+  );
+  setRefreshTokenCookie(res, refreshToken);
+
+  res.status(200).json({
+    accessToken,
+    refreshToken: newRefreshToken,
   });
 };
