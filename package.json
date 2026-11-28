@@ -1,16 +1,28 @@
 {
-  "name": "Boilerplate-code",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "Announcements API",
+  "version": "1.0.1",
+  "description": "REST API for managing announcements with authentication, validation, and pagination.",
+  "main": "app.js",
   "scripts": {
     "start": "tsx app.ts",
     "dev": "tsx --watch app.ts",
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "announcements",
+    "REST API",
+    "Node.js",
+    "Express",
+    "TypeScript",
+    "Prisma",
+    "PostgreSQL",
+    "authentication",
+    "JWT",
+    "Zod",
+    "OpenAPI"
+  ],
+  "author": "Milosska",
   "license": "ISC",
   "type": "module",
   "dependencies": {

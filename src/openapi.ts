@@ -73,6 +73,7 @@ registry.registerPath({
     },
     409: { description: "Username or email already taken" },
     422: { description: "Validation error" },
+    500: { description: "Internal Server Error" },
   },
 });
 
@@ -99,6 +100,7 @@ registry.registerPath({
     },
     401: { description: "Incorrect username or password" },
     422: { description: "Validation error" },
+    500: { description: "Internal Server Error" },
   },
 });
 
@@ -125,6 +127,7 @@ registry.registerPath({
     },
     401: { description: "Refresh token is not provided, invalid or expired" },
     422: { description: "Validation error" },
+    500: { description: "Internal Server Error" },
   },
 });
 
@@ -148,6 +151,7 @@ registry.registerPath({
       description:
         "Access token is not provided, invalid or expired; User not found",
     },
+    500: { description: "Internal Server Error" },
   },
 });
 
@@ -166,6 +170,7 @@ registry.registerPath({
       description:
         "Access token is not provided, invalid or expired; User not found",
     },
+    500: { description: "Internal Server Error" },
   },
 });
 
@@ -213,6 +218,7 @@ registry.registerPath({
       },
     },
     422: { description: "Validation error" },
+    500: { description: "Internal Server Error" },
   },
 });
 
@@ -235,6 +241,7 @@ registry.registerPath({
     },
     404: { description: "Announsment with provided id is not found" },
     422: { description: "Incorrect params format" },
+    500: { description: "Internal Server Error" },
   },
 });
 
@@ -265,6 +272,7 @@ registry.registerPath({
         "Access token is not provided, invalid or expired; User not found",
     },
     422: { description: "Validation error" },
+    500: { description: "Internal Server Error" },
   },
 });
 
@@ -298,6 +306,7 @@ registry.registerPath({
     403: { description: "Access denied" },
     404: { description: "Announsment with provided id is not found" },
     422: { description: "Validation error" },
+    500: { description: "Internal Server Error" },
   },
 });
 
@@ -321,5 +330,6 @@ registry.registerPath({
     403: { description: "Access denied" },
     404: { description: "Announsment with provided id is not found" },
     422: { description: "Validation error" },
+    500: { description: "Internal Server Error" },
   },
 });
