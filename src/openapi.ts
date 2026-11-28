@@ -300,3 +300,26 @@ registry.registerPath({
     422: { description: "Validation error" },
   },
 });
+
+registry.registerPath({
+  method: "delete",
+  path: "/announcements/{id}",
+  tags: ["Announcements"],
+  security: [{ bearerAuth: [] }],
+  summary: "Delete existing announcement",
+  request: {
+    params: GetAnnouncementParamSchema,
+  },
+  responses: {
+    204: {
+      description: "Announcement deleted successfully",
+    },
+    401: {
+      description:
+        "Access token is not provided, invalid or expired; User not found",
+    },
+    403: { description: "Access denied" },
+    404: { description: "Announsment with provided id is not found" },
+    422: { description: "Validation error" },
+  },
+});

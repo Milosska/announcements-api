@@ -141,3 +141,29 @@ export const updateAnnouncement = async (req: Request, res: Response) => {
 
   res.json({ newAnnouncement });
 };
+
+export const deleteAnnouncement = async (req: Request, res: Response) => {
+  const announcementId = res.locals.params.id;
+
+  const announcement = await prisma.announcement.findUnique({
+    where: {
+      id: announcementId,
+    },
+  });
+
+  if (!announcement) {
+    throw createHttpError(404, "Announsment with provided id is not found");
+  }
+
+  if (announcement.userId !== req.user!.id) {
+    throw createHttpError(403, "Access denied");
+  }
+
+  await prisma.announcement.delete({
+    where: {
+      id: announcementId,
+    },
+  });
+
+  res.status(204).end();
+};

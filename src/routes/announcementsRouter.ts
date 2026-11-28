@@ -19,6 +19,7 @@ import {
   getAnnouncementById,
   postAnnouncement,
   updateAnnouncement,
+  deleteAnnouncement,
 } from "../controllers/announcementsControllers.ts";
 
 const announcementsRouter = Router();
@@ -48,6 +49,13 @@ announcementsRouter.patch(
   validateParams(getAnnouncementParamSchema),
   validateBody(updateAnnouncementSchema),
   updateAnnouncement,
+);
+
+announcementsRouter.delete(
+  "/:id",
+  authenticate,
+  validateParams(getAnnouncementParamSchema),
+  deleteAnnouncement,
 );
 
 export default announcementsRouter;
