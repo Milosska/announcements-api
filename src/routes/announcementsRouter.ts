@@ -1,12 +1,28 @@
 import { Router } from "express";
 
-import { authenticate, validateBody } from "../middlewares/index.ts";
+import {
+  authenticate,
+  validateBody,
+  validateQuery,
+} from "../middlewares/index.ts";
 
-import { createAnnouncementSchema } from "../validators/announcementsValidator.ts";
+import {
+  getAnnouncementsQuerySchema,
+  createAnnouncementSchema,
+} from "../validators/announcementsValidator.ts";
 
-import { postAnnouncement } from "../controllers/announcementsControllers.ts";
+import {
+  getAnnouncements,
+  postAnnouncement,
+} from "../controllers/announcementsControllers.ts";
 
 const announcementsRouter = Router();
+
+announcementsRouter.get(
+  "/",
+  validateQuery(getAnnouncementsQuerySchema),
+  getAnnouncements,
+);
 
 announcementsRouter.post(
   "/",

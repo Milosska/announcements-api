@@ -1,6 +1,13 @@
 import { z } from "./config.ts";
 import { meSchema } from "./authValidator.ts";
 
+export const getAnnouncementsQuerySchema = z.object({
+  search: z.string().trim().optional(),
+  sort: z.enum(["newest", "oldest"]).default("newest"),
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().positive().default(10),
+});
+
 export const createAnnouncementSchema = z.object({
   title: z.string().min(3).max(100).openapi({
     example: "Vintage wooden desk",
@@ -23,4 +30,18 @@ export const announcementSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
   user: meSchema.omit({ createdAt: true, updatedAt: true }),
+});
+
+export const paginatedAnnouncementsSchema = z.object({
+  data: z.array(announcementSchema),
+  pagination: z.object({
+    total: z.number().int().openapi({
+      example: 30,
+    }),
+    totalPages: z.number().int().openapi({
+      example: 3,
+    }),
+    page: getAnnouncementsQuerySchema.shape.page,
+    perPage: getAnnouncementsQuerySchema.shape.limit,
+  }),
 });

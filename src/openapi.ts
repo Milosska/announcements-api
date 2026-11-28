@@ -12,8 +12,10 @@ import {
   meSchema,
 } from "./validators/authValidator.ts";
 import {
+  getAnnouncementsQuerySchema,
   createAnnouncementSchema,
   announcementSchema,
+  paginatedAnnouncementsSchema,
 } from "./validators/announcementsValidator.ts";
 
 export const registry = new OpenAPIRegistry();
@@ -166,6 +168,10 @@ registry.registerPath({
 });
 
 // Announcements path group
+const GetAnnouncementsQuerySchema = registry.register(
+  "Get Announcements Query",
+  getAnnouncementsQuerySchema,
+);
 const CreateAnnouncementSchema = registry.register(
   "Create Announcement",
   createAnnouncementSchema,
@@ -174,6 +180,31 @@ const AnnouncementSchema = registry.register(
   "Announcement",
   announcementSchema,
 );
+const PaginatedAnnouncementsSchema = registry.register(
+  "Announcements",
+  paginatedAnnouncementsSchema,
+);
+
+registry.registerPath({
+  method: "get",
+  path: "/announcements",
+  tags: ["Announcements"],
+  summary: "Get announcements",
+  request: {
+    query: getAnnouncementsQuerySchema,
+  },
+  responses: {
+    201: {
+      description: "Announcement returned successfully",
+      content: {
+        "application/json": {
+          schema: PaginatedAnnouncementsSchema,
+        },
+      },
+    },
+    422: { description: "Validation error" },
+  },
+});
 
 registry.registerPath({
   method: "post",
