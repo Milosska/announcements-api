@@ -1,4 +1,5 @@
 import { type Request, type Response } from "express";
+import createHttpError from "http-errors";
 
 import prisma from "../../prisma/client.ts";
 
@@ -51,6 +52,30 @@ export const getAnnouncements = async (req: Request, res: Response) => {
       perPage: limit,
     },
   });
+};
+
+export const getAnnouncementById = async (req: Request, res: Response) => {
+  const announcementId = res.locals.params.id;
+
+  const announcement = await prisma.announcement.findUnique({
+    where: {
+      id: announcementId,
+    },
+    omit: {
+      userId: true,
+    },
+    include: {
+      user: {
+        omit: { password: true, createdAt: true, updatedAt: true },
+      },
+    },
+  });
+
+  if (!announcement) {
+    throw createHttpError(404, "Announsment with provided id is not found");
+  }
+
+  res.json({ ...announcement });
 };
 
 export const postAnnouncement = async (req: Request, res: Response) => {

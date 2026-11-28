@@ -8,6 +8,10 @@ export const getAnnouncementsQuerySchema = z.object({
   limit: z.coerce.number().int().positive().default(10),
 });
 
+export const getAnnouncementParamSchema = z.object({
+  id: z.coerce.number().int().positive(),
+});
+
 export const createAnnouncementSchema = z.object({
   title: z.string().min(3).max(100).openapi({
     example: "Vintage wooden desk",

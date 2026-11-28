@@ -13,6 +13,7 @@ import {
 } from "./validators/authValidator.ts";
 import {
   getAnnouncementsQuerySchema,
+  getAnnouncementParamSchema,
   createAnnouncementSchema,
   announcementSchema,
   paginatedAnnouncementsSchema,
@@ -172,6 +173,10 @@ const GetAnnouncementsQuerySchema = registry.register(
   "Get Announcements Query",
   getAnnouncementsQuerySchema,
 );
+const GetAnnouncementParamSchema = registry.register(
+  "Get Announcement Params",
+  getAnnouncementParamSchema,
+);
 const CreateAnnouncementSchema = registry.register(
   "Create Announcement",
   createAnnouncementSchema,
@@ -191,11 +196,11 @@ registry.registerPath({
   tags: ["Announcements"],
   summary: "Get announcements",
   request: {
-    query: getAnnouncementsQuerySchema,
+    query: GetAnnouncementsQuerySchema,
   },
   responses: {
-    201: {
-      description: "Announcement returned successfully",
+    200: {
+      description: "Announcements returned successfully",
       content: {
         "application/json": {
           schema: PaginatedAnnouncementsSchema,
@@ -203,6 +208,28 @@ registry.registerPath({
       },
     },
     422: { description: "Validation error" },
+  },
+});
+
+registry.registerPath({
+  method: "get",
+  path: "/announcements/{id}",
+  tags: ["Announcements"],
+  summary: "Get announcement by ID",
+  request: {
+    params: GetAnnouncementParamSchema,
+  },
+  responses: {
+    200: {
+      description: "Announcement returned successfully",
+      content: {
+        "application/json": {
+          schema: AnnouncementSchema,
+        },
+      },
+    },
+    404: { description: "Announsment with provided id is not found" },
+    422: { description: "Incorrect params format" },
   },
 });
 
