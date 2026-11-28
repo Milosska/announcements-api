@@ -15,6 +15,7 @@ import {
   getAnnouncementsQuerySchema,
   getAnnouncementParamSchema,
   createAnnouncementSchema,
+  updateAnnouncementSchema,
   announcementSchema,
   paginatedAnnouncementsSchema,
 } from "./validators/announcementsValidator.ts";
@@ -181,6 +182,10 @@ const CreateAnnouncementSchema = registry.register(
   "Create Announcement",
   createAnnouncementSchema,
 );
+const UpdateAnnouncementSchema = registry.register(
+  "Update Announcement",
+  updateAnnouncementSchema,
+);
 const AnnouncementSchema = registry.register(
   "Announcement",
   announcementSchema,
@@ -259,6 +264,39 @@ registry.registerPath({
       description:
         "Access token is not provided, invalid or expired; User not found",
     },
+    422: { description: "Validation error" },
+  },
+});
+
+registry.registerPath({
+  method: "patch",
+  path: "/announcements/{id}",
+  tags: ["Announcements"],
+  security: [{ bearerAuth: [] }],
+  summary: "Update existing announcement",
+  request: {
+    params: GetAnnouncementParamSchema,
+    body: {
+      content: {
+        "application/json": { schema: UpdateAnnouncementSchema },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: "Announcement updated successfully",
+      content: {
+        "application/json": {
+          schema: AnnouncementSchema,
+        },
+      },
+    },
+    401: {
+      description:
+        "Access token is not provided, invalid or expired; User not found",
+    },
+    403: { description: "Access denied" },
+    404: { description: "Announsment with provided id is not found" },
     422: { description: "Validation error" },
   },
 });

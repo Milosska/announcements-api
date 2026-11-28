@@ -28,6 +28,17 @@ export const createAnnouncementSchema = z.object({
   }),
 });
 
+export const updateAnnouncementSchema = createAnnouncementSchema
+  .partial()
+  .refine(
+    (data) => {
+      return Object.keys(data).length > 0;
+    },
+    {
+      error: "At least one field must be provided",
+    },
+  );
+
 export const announcementSchema = z.object({
   id: z.number().positive(),
   ...createAnnouncementSchema.shape,

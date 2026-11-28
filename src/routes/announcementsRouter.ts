@@ -11,12 +11,14 @@ import {
   getAnnouncementsQuerySchema,
   getAnnouncementParamSchema,
   createAnnouncementSchema,
+  updateAnnouncementSchema,
 } from "../validators/announcementsValidator.ts";
 
 import {
   getAnnouncements,
   getAnnouncementById,
   postAnnouncement,
+  updateAnnouncement,
 } from "../controllers/announcementsControllers.ts";
 
 const announcementsRouter = Router();
@@ -38,6 +40,14 @@ announcementsRouter.post(
   authenticate,
   validateBody(createAnnouncementSchema),
   postAnnouncement,
+);
+
+announcementsRouter.patch(
+  "/:id",
+  authenticate,
+  validateParams(getAnnouncementParamSchema),
+  validateBody(updateAnnouncementSchema),
+  updateAnnouncement,
 );
 
 export default announcementsRouter;
