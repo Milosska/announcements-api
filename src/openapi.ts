@@ -11,6 +11,10 @@ import {
   tokensSchema,
   meSchema,
 } from "./validators/authValidator.ts";
+import {
+  createAnnouncementSchema,
+  announcementSchema,
+} from "./validators/announcementsValidator.ts";
 
 export const registry = new OpenAPIRegistry();
 
@@ -158,5 +162,45 @@ registry.registerPath({
       description:
         "Access token is not provided, invalid or expired; User not found",
     },
+  },
+});
+
+// Announcements path group
+const CreateAnnouncementSchema = registry.register(
+  "Create Announcement",
+  createAnnouncementSchema,
+);
+const AnnouncementSchema = registry.register(
+  "Announcement",
+  announcementSchema,
+);
+
+registry.registerPath({
+  method: "post",
+  path: "/announcements",
+  tags: ["Announcements"],
+  security: [{ bearerAuth: [] }],
+  summary: "Create new announcement",
+  request: {
+    body: {
+      content: {
+        "application/json": { schema: CreateAnnouncementSchema },
+      },
+    },
+  },
+  responses: {
+    201: {
+      description: "Announcement created successfully",
+      content: {
+        "application/json": {
+          schema: AnnouncementSchema,
+        },
+      },
+    },
+    401: {
+      description:
+        "Access token is not provided, invalid or expired; User not found",
+    },
+    422: { description: "Validation error" },
   },
 });

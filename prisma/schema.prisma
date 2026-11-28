@@ -20,6 +20,7 @@ name String
 createdAt DateTime @default(now())
 updatedAt DateTime @updatedAt
 refreshTokens RefreshToken?
+announcements Announcement[]
 }
 
 model RefreshToken {
@@ -30,4 +31,17 @@ model RefreshToken {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   expiresAt DateTime
+}
+
+model Announcement {
+  id Int @id @unique @default(autoincrement())
+  title String
+  description String
+  price Decimal
+  category String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId Int
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
